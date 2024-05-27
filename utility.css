@@ -1,10 +1,5 @@
 .border{
-    /* border: 2px white solid; */
-    /* gap: 6px; */
-    /* margin:12px; */
-    /* padding: 4px; */
     border-radius: 7px;
-    /* background-color:#121212 ; */
 }
 .flex{
     display: flex;
