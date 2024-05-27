@@ -164,3 +164,4 @@ currentSong.currentTime = ((currentSong.duration) * percent)/100;
 }
 // Run the main function to execute the code
 main();
+
