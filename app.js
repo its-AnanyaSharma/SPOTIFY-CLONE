@@ -1,7 +1,9 @@
+console.log("Runingg.....js")
 let currentSong = new Audio();
 let songs;
 let currentFolder;
-// let songHeading = [];
+
+
 
 function formatTime(seconds) {
     if (isNaN(seconds)|| seconds < 0){
@@ -20,9 +22,9 @@ function formatTime(seconds) {
 
 async function getSongs(folder) {
     currentFolder = folder
-    let a = await fetch(`http://127.0.0.1:3000/${folder}/`);
+    let a = await fetch(`/${folder}/`)
+    // let a = await fetch(`http://127.0.0.1:3000/${currentFolder}/`);
     let response = await a.text();
-    console.log(response);
     let div = document.createElement("div");
     div.innerHTML = response;
     let as = div.getElementsByTagName("a");
@@ -32,7 +34,7 @@ async function getSongs(folder) {
         const element = as[index];
         if (element.href.endsWith(".mp3")) {
             let url = element.href;
-            let part1 = url.split(`/${folder}/`)[1];
+            let part1 = url.split(`/${currentFolder}/`)[1];
             // let part2 = part1.split("_64")[0];
             songs.push(part1);
             // songHeading.push(part2); 
@@ -71,7 +73,7 @@ async function getSongs(folder) {
  
          })
      })
-    // return songs;
+    return songs;
     // return songHeading;
 }
 const playMusic = (track, pause=false)=>{
@@ -81,7 +83,7 @@ const playMusic = (track, pause=false)=>{
         play.src = "svgs/pause.svg"
     }
     // let audio = new Audio("/songs/" + track)
-    currentSong.play()
+    // currentSong.play()
     document.querySelector(".songinfo").innerHTML =decodeURI(track) 
     document.querySelector(".songtime").innerHTML = "00:00 / 00:00"
 
@@ -109,6 +111,7 @@ async function main() {
     })
     // Event listener for prev 
     prev.addEventListener("click", ()=>{
+        currentSong.pause()
         console.log("play prev")
         let index = songs.indexOf(currentSong.src.split("/").slice(-1)[0])
         if((index-1)>= 0){
@@ -118,13 +121,13 @@ async function main() {
 
     // Event listener for next
     next.addEventListener("click", ()=>{
-        // currentSong.pause()
+        currentSong.pause()
         console.log("Next playing")
         let index = songs.indexOf(currentSong.src.split("/").slice(-1)[0])
         if((index+1) <songs.length){
             playMusic(songs[index+1])
         }
-        // console.log()[0]
+       
     })
     // Time updation as the song plays
     currentSong.addEventListener("timeupdate",()=>{
@@ -132,14 +135,14 @@ async function main() {
         document.querySelector(".songtime").innerHTML = `${formatTime(currentSong.currentTime)}/
         ${formatTime(currentSong.duration)}`
         document.querySelector(".circle").style.left = (currentSong.currentTime / currentSong.duration) * 100 + "%";
-        // document.querySelector(".circle").style.left = (currentSong.currentTime/currentSong.duration)*100 + "%";
+       
     })
     // Active Seekbar
     document.querySelector(".seekbar").addEventListener("click", e=>{
         let percent = (e.offsetX/e.target.getBoundingClientRect().width)* 100;
         document.querySelector(".circle").style.left = percent + "%";
-currentSong.currentTime = ((currentSong.duration) * percent)/100;
-})
+    currentSong.currentTime = ((currentSong.duration) * percent)/100;
+    })
     // Event Listener for HAMBURGER
     document.querySelector(".hamburger").addEventListener("click",()=>{
         document.querySelector(".left").style.left = "0"
